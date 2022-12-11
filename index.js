@@ -2,13 +2,26 @@
 const http = require("http")
   
 // Creating Server
-const server = http.createServer((req,res)=>{
-    req.statusCode=200;
-    console.log("Server is Started")
-    res.end();
+const tls = require('tls')
+const https = require('live-server-https');
+ 
+const server = tls.createServer(https, (socket) => {
+  console.log('server connected',
+              socket.authorized ? 'authorized' : 'unauthorized');
+  socket.write('welcome!\n');
+  socket.setEncoding('utf8');
+  socket.pipe(socket);
+});
+server.listen(8000, () => {
+  console.log('server bound');
 });
   
-// Executing the server
-server.listen(3000,"localhost",()=>{
-    console.log("Server is Running ")
-})
+
+var fs = require("fs");
+
+module.exports = {
+	cert: fs.readFileSync(__dirname + "/server.cert"),
+	key: fs.readFileSync(__dirname + "/server.key"),
+	passphrase: "12345"
+};
+
